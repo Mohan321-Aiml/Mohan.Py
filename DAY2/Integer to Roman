@@ -1,0 +1,66 @@
+class Solution(object):
+    def intToRoman(self, num):
+        symbols = {
+            1: "I",
+            5: "V",
+            10: "X",
+            50: "L",
+            100: "C",
+            500: "D",
+            1000: "M"
+        }
+
+        ROM = ""                  # return val
+        str_num = str(num)        # stringified num to get num digits
+        digits = len(str_num)     # num digits
+        div = 10 ** (digits - 1)     # decimal val
+
+        for i in range(digits):
+            # gets the each single digit in the number 1-by-1
+            first = int(str_num[i])        # ex (first iteration): 1973 --> 1
+            decimal_val = first * div      # --> 1000
+
+            ## -- first check if num is greater than 1000 (1000 - 3999) -- ##
+            if decimal_val > 1000:
+                # simply would be adding 'first' 'M's' (value 1000) to ROM
+                for j in range(first, 0, -1):
+                    ROM += symbols[div]
+
+            elif first == 0: 
+                div /= 10 
+                continue
+
+            ## -- handling starting value 1 or 5: having fixed roman digit -- ##
+            elif first == 1 or first == 5:
+                ROM += symbols[decimal_val]
+
+            ## -- handling starting value 4 or 9 - Subtractive Form -- ##
+            elif first == 4 or first == 9:
+                ROM += symbols[div]               # adds the remainder which is the divisor: 10, 100, 1000...
+                ROM += symbols[decimal_val + div]         # [num+div]: to get next roman number from num 
+        
+            ## -- handling starting values 2, 3, 6, 7, 8 - Maximal Value -- ##
+            else:
+                # for 2 and 3
+                if first < 5:
+                    min_val = div            #- --> ex (for 200): min_val = 100
+                    for j in range(first, 0, -1):
+                        ROM += symbols[min_val]        # adding the min_val's symbol to the ROM
+
+                # for 6, 7, and 8
+                else:
+                    min_val = 5 * div        #- --> ex (for 700): min_val = 500 ('D')
+                    ROM += symbols[min_val]  # add the min_val first: 'D'
+
+                    # add the following div digits
+                    for j in range(first-5, 0, -1):     # ex: first = 7-5 = 2: from 2-0
+                        ROM += symbols[div]             # ex: add the divisor (100) twice ==> 'XX'
+
+                    #--> result: ROM = 'DXX' = 700
+
+            div /= 10 
+
+        return ROM
+
+
+    ## recursive method
