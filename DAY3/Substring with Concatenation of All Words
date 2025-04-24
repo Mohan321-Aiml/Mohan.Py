@@ -1,0 +1,71 @@
+class Solution(object):
+    def findSubstring(self, s, words):
+        same=True
+        if s[0]==words[0][0]:
+            for i in s:
+                if i!=s[0]:
+                    same=False
+            for word in words:
+                for i in word:
+                    if i!=s[0]:
+                        same=False
+            if same:
+                return range(len(s)-len(words)*len(words[0])+1)
+       
+        temp={}
+        for word in words:
+            if word in temp:
+                count=temp[word][0]
+                temp[word][0]=count+1
+            else:
+                temp[word]=[1,0]
+        
+        output=[]
+        wordLen=len(words[0])
+        if len(s)<len(words)*wordLen:
+            return []
+        left=0 
+        re=len(s)+1-len(words)*wordLen
+        while left<re :
+            notIn=left-wordLen
+            while s[left:left+wordLen] not in temp.keys() and left<re:
+                left=notIn+1
+                notIn=left
+            for i in temp:
+                temp[i][1]=0
+                
+            pLeft=left
+            pRight=pLeft+len(words)*wordLen
+            while pLeft<pRight:
+                word=s[pLeft:pLeft+wordLen]
+                if word not in temp.keys():
+                    break 
+                if word in temp.keys():
+                    count=temp[word][1]
+                    count=count+1
+                    if count>temp[word][0]:
+                        break
+                    else:
+                        temp[word][1]=count
+                pLeft=pLeft+wordLen
+            
+            flag=True
+            for i in temp:
+                if temp[i][0]!=temp[i][1]:
+                    flag=False
+                    break
+            if flag:
+                output.append(left)
+            i=1
+            found=False
+            while i<wordLen:
+                if s[left+i:left+i+wordLen] in temp:
+                    left=left+i
+                    found=True
+                    break
+                i=i+1
+            if not found:
+                left=left+wordLen 
+        return output
+
+            
