@@ -1,0 +1,30 @@
+class Solution(object):
+    def generateParenthesis(self, n):
+        # :type n: int
+        # :rtype: List[str]
+        
+        output = []
+        output.append("()")
+        pcount = 1
+        used = set()
+        used.add("()")
+
+        while pcount < n:
+            newoutput = []
+            for p in output:
+                for i in range(0, len(p)):
+                    if p[i] == "(":
+                        variation = p[:i + 1] + "()" + p[i + 1:]
+                        if variation not in used:
+                            newoutput.append(variation)
+                            used.add(variation)
+                    elif p[i] == ")":
+                        variation = p[:] + "()"
+                        if variation not in used:
+                            newoutput.append(variation)
+                            used.add(variation)
+            
+            output = newoutput
+            pcount += 1
+
+        return output
