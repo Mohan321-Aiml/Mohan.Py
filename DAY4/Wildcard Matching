@@ -1,0 +1,34 @@
+import heapq
+class Solution(object):
+    def isMatch(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: bool
+        """
+        s_i,p_i=0,0
+        p_star_i, s_star_i=-1,-1
+        p_len, s_len =len(p), len(s)
+        if s==p:
+            return True
+        else:
+            while s_i< s_len:
+                if p_i<p_len and (s[s_i]==p[p_i] or p[p_i]=='?'):
+                    s_i+=1
+                    p_i+=1
+                elif p_i<p_len and  p[p_i]=='*':
+                    p_star_i= p_i
+                    s_star_i= s_i
+                    p_i+=1
+                elif p_star_i!=-1 and s_star_i!=-1 :
+                    p_i=p_star_i+1
+                    s_star_i += 1
+                    s_i = s_star_i
+                else:
+                    return False
+            while p_i<p_len and p[p_i]=='*':
+                p_i+=1
+            return p_i == p_len
+
+
+        
