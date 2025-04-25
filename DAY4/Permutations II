@@ -1,0 +1,28 @@
+class Solution:
+    def permuteUnique(self, nums):
+        
+
+        result=self.combineUnique(nums)
+        return result
+
+    def combineUnique(self, nums):
+        result = []
+        visited=[0]*len(nums)
+        self.backtrack(nums, [], result,visited)
+        return result
+
+    def backtrack(self, nums,combination, result,visited):
+        if(len(combination)==len(nums)):
+            if combination not in result:
+                result.append(combination[:]) 
+        
+        for i in range(len(nums)):
+                
+                if visited[i]==1:
+                    continue
+                else:
+                    visited[i]=1              
+                    combination.append(nums[i])
+                    self.backtrack(nums, combination, result,visited)  
+                    visited[i]=0
+                    combination.pop()  
