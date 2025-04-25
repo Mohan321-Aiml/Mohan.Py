@@ -1,0 +1,26 @@
+class Solution(object):
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        return self.helper(nums,[False]*len(nums),[],[])
+
+    def helper(self,arr,used,temp,final_ans):
+
+        if len(temp) == len(arr):
+            final_ans.append(temp[:])
+            return
+
+        for i in range(len(arr)):
+            if not used[i]:
+                used[i] = True
+                temp.append(arr[i])
+
+                self.helper(arr,used,temp,final_ans)
+
+                used[i] = False
+                temp.pop()
+        
+        return final_ans
+        
