@@ -1,0 +1,39 @@
+class Solution(object):
+    def merge(self, nums1, m, nums2, n):
+        """
+        :type nums1: List[int]
+        :type m: int
+        :type nums2: List[int]
+        :type n: int
+        :rtype: None Do not return anything, modify nums1 in-place instead.
+        """
+
+        # Edge case 1: If n = 0, we don't need to merge
+        if n == 0:
+            return
+        
+        # Edge case 2: If first element of nums2 is greater than or equal to last element of nums1, 
+        # blindly append nums2 to indexes nums1[m:]
+        if nums1[m-1] <= nums2[0]:
+            nums1[m:] = nums2
+        
+        # Initiating last index of nums1 array
+        last_idx = len(nums1) - 1
+
+        # Since arrays are sorted in nums1 and nums2, we will be comparing the arrays from right to left
+        while m > 0 and n > 0:
+            # If last element of nums1[:m] is less than nums2's last element, 
+            # we save nums2's element at last index
+            if nums1[m - 1] < nums2[n - 1]:
+                nums1[last_idx] = nums2[n-1]
+                n -= 1 # decrement index of nums2
+            else:
+                nums1[last_idx] = nums1[m-1]
+                m -= 1
+            last_idx -= 1 # decrement last index by 1 as it just got filled
+        
+        # Special case: If m = 0, we still want to traverse through nums2 and build nums1
+        while n > 0:
+            nums1[last_idx] = nums2[n-1]
+            n -= 1
+            last_idx -= 1
