@@ -1,0 +1,33 @@
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+#Pre order traversal into a linked list
+
+class Solution(object):
+    def flatten(self, root):
+        #The solution for this can be done pretty easily but it gets tricky when you work with only O(1) space
+        #You have to draw it out ahahahahhaha but the general idea is that you can merge both left subtree and right subtree into the current right with right subtree being added to the most right node of the left subtree. If the left subtree of current is empty then you can ignore and just go to the next right node.
+        head = root
+        if root == None:
+            return None
+        current = root
+        currentRight = current.right
+        currentLeft = current.left
+        while(current is not None):
+            if current.left is not None:
+                current.right = current.left
+                current.left = None
+                while(currentLeft.right is not None):
+                    currentLeft = currentLeft.right
+                currentLeft.right = currentRight
+            current = current.right
+            if current is not None:
+                currentLeft = current.left
+                currentRight = current.right
+        return head
+        
+        
+        
