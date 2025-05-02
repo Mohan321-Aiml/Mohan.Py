@@ -1,0 +1,18 @@
+class Solution(object):
+    def shortestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        "aacecaaa"
+        "aaacecaa"
+
+        "abcd"
+        "dcda"
+        """
+        if len(s) < 2:
+            return s
+
+        r = s[::-1]
+        for i in range(len(s)):
+            if s.startswith(r[i:]):
+                return r[:i] + s
