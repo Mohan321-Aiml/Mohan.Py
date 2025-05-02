@@ -1,0 +1,31 @@
+def search(course, graph, status):
+    status[course] = 1
+    for prereq in graph[course]:
+        if status[prereq] == 1: return status, False
+        elif status[prereq] == 0:
+            status, possible = search(prereq, graph, status)
+            if not possible: return status, False
+    status[course] = 2
+    return status, True
+
+
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        #0 for not visited, 1 for visited, 2 for visited and exited
+        status = [0 for _ in range (numCourses)]
+        graph = [[] for _ in range (numCourses)]
+        for prereq in prerequisites:
+            #if prereq[0] == prereq[1]: return False
+            graph[prereq[0]].append(prereq[1])
+        for i in range (numCourses):
+            if status[i] == 0:
+                status, possible = search(i, graph, status)
+                if not possible: return False
+        return possible
+
+        
