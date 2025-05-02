@@ -1,0 +1,32 @@
+class Solution(object):
+    def minSubArrayLen(self, target, nums):
+        """
+        :type target: int
+        :type nums: List[int]
+        :rtype: int
+        """
+        if sum(nums) < target:
+            return 0
+        elif sum(nums) == target:
+            return len(nums)
+        length = len(nums) 
+        curr = 0
+        ptr = 0
+        currentSum = nums[curr]
+        minLen = 9999999
+        while curr < length:
+            if currentSum >= target:
+                nextSum = currentSum - nums[ptr]
+                while nextSum >= target: 
+                    currentSum -= nums[ptr]
+                    ptr += 1 
+                    nextSum = currentSum - nums[ptr]
+                lengthSub = curr - ptr + 1 
+                if lengthSub < minLen: 
+                    minLen = lengthSub
+            curr += 1
+            if curr < length:
+                currentSum += nums[curr]
+            
+
+        return minLen
