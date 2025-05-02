@@ -1,0 +1,45 @@
+from collections import deque
+
+class Solution(object):
+    def findOrder(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: List[int]
+        """
+        
+        adj = [[0 for _ in range(numCourses)] for _ in range(numCourses)]
+        for prerequisite in prerequisites:
+            a, b = prerequisite
+            adj[b][a] = 1
+
+        indegree = deque()
+        for col in range(len(adj)):
+
+            # Calculate Indegree
+            sumCol = 0
+            for row in range(len(adj)):
+                sumCol += adj[row][col]
+            
+            if sumCol == 0:
+                indegree.append(col)
+
+        topo = []
+        while indegree:
+            print(indegree)
+            node = indegree.popleft()
+            for col in range(len(adj[node])):
+                if adj[node][col] == 1:
+                    adj[node][col] = 0
+
+                     # Calculate Indegree
+                    sumCol = 0
+                    for row in range(len(adj)):
+                        sumCol += adj[row][col]
+                    if sumCol == 0:
+                        indegree.append(col)
+
+            topo.append(node)
+
+        return topo if len(topo) == numCourses else []
+                
