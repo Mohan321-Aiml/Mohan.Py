@@ -1,0 +1,20 @@
+class Solution(object):
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        def recur(indi, arr,mape):
+            if indi >= len(arr):
+                return 0 
+            if indi in mape:
+                return mape[indi]
+            take = arr[indi] + recur(indi + 2, arr,mape)
+            nottake = recur(indi + 1, arr,mape)
+            mape[indi] = max(take, nottake)
+            return mape[indi]
+        return max(recur(0, nums[:-1],{}), recur(0, nums[1:],{}))
