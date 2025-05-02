@@ -1,0 +1,61 @@
+class TrieNode:
+    def __init__(self):
+        self.children = dict()      # (ch: [ch1, ch2, ch3, ...])
+        self.isEnd = False
+
+class WordDictionary(object):
+
+    def __init__(self):
+        self.root = TrieNode()         # root is always empty
+        self.max_word_length = 0       # for faster run time
+        
+    def addWord(self, word):
+        node = self.root
+
+        for ch in word:
+            # fetch or create new node for ch
+            if ch not in node.children:
+                node.children[ch] = TrieNode()
+
+            # update pointer
+            node = node.children[ch]
+
+        # after all the characters are traversed, mark the last node as end of word
+        node.isEnd = True
+
+        # update max length
+        self.max_word_length = max(self.max_word_length, len(word))
+        
+    def search(self, word):
+
+        def dfs(word, node, i):
+            if i >= len(word):
+                return node.isEnd
+
+            w = word[i]
+
+            if w == '.':
+                # pass word[i] and check child of child of current node
+                for ch in node.children:
+                    childNode = node.children[ch]
+                    if dfs(word, childNode, i + 1):
+                        return True
+
+            # w != '.'
+            if w in node.children:
+                # immediate child
+                node = node.children[w]
+                return dfs(word, node, i + 1)
+
+            # not possible
+            return False
+        
+        if len(word) > self.max_word_length:
+            return False
+    
+        return dfs(word, self.root, 0)
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
