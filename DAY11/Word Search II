@@ -1,0 +1,85 @@
+class Solution(object):
+    def findWords(self, board, words):
+        """
+        :type board: List[List[str]]
+        :type words: List[str]
+        :rtype: List[str]
+        """
+        rows = len(board)
+        cols = len(board[0])
+
+        stor = {}
+        for i in range(rows):
+            for j in range(cols):
+                if stor.get(board[i][j]):
+                    stor[board[i][j]].append((i, j))
+                else:
+                    stor[board[i][j]] = [(i, j)]
+        
+        visited = [[0 for _ in range(cols)] for k in range(rows)]
+
+        def search(pos, word, idx, prev_pos):
+            if idx == len(word):
+                return True
+            if stor.get(word[idx]):
+                next_pos = [
+                    (pos[0], pos[1]+1),
+                    (pos[0], pos[1]-1),
+                    (pos[0]+1, pos[1]),
+                    (pos[0]-1, pos[1]),
+                ]
+                
+                next_pos = [k for k in next_pos if \
+                    0 <= k[0] < rows and 0 <= k[1] < cols and visited[k[0]][k[1]] == 0
+                ]
+                next_pos = tuple(
+                    k for k in next_pos if board[k[0]][k[1]] == word[idx]
+                )
+
+                if len(next_pos) == 0:
+                    return False
+
+                ans = False
+                for np in next_pos:
+                    visited[np[0]][np[1]] = 1
+                    ans = ans or search(np, word, idx+1, prev_pos)
+                    visited[np[0]][np[1]] = 0
+                return ans
+
+            else:
+                return False
+
+        result = []
+        for w in words:
+            if len(w) > cols * rows:
+                continue
+
+            if not all([0 < len(stor.get(s, [])) for s in w]):
+                continue
+
+            if any(["".join(b) == w or "".join(b)[::-1] == w for b in board]):
+                result.append(w)
+                continue
+
+            loc_w = ""
+            if len(result) > 0:
+                if len(w) > 5:
+                    if result[-1][:min(len(w)-1, 7)] == w[:min(len(w)-1, 7)]:
+                        loc_w = w[:min(len(w)-1, 7)]
+                        w = w[min(len(w)-1, 7):]
+
+            if stor.get(w[0]):
+                idx = 1
+                find = 0
+                for beg in stor[w[0]]:
+                    visited[beg[0]][beg[1]] = 1
+                    if search(beg, w, 1, set()):
+                        find = 1
+                    visited[beg[0]][beg[1]] = 0
+
+                    if find == 1:
+                        break
+                if find == 1:
+                    result.append(loc_w + w)
+
+        return sorted(result)
